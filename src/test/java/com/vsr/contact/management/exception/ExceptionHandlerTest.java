@@ -46,6 +46,7 @@ public class ExceptionHandlerTest {
 	 
 	 @Test
 	  public void testhandleMissingServletRequestPartException() {
+		 
 		 org.springframework.web.multipart.support.MissingServletRequestPartException ex  = new org.springframework.web.multipart.support.MissingServletRequestPartException ("attribute");
 
 	        ResponseEntity<ExceptionResponse> response = exceptionHandler.handleMissingServletRequestPartException(ex);
