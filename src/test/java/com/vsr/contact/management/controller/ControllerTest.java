@@ -46,11 +46,12 @@ public class ControllerTest {
 		dataResponse.setEmail("value2");
 		dataResponse.setReportsTo("value2");
 		list.add(dataResponse);
+
 		// Mocking create method behavior
 		when(apiService.create(mockFile, requests)).thenReturn("created");
 
 		// Mocking getData method behavior
-		when(apiService.getData()).thenReturn(list);
+		when(apiService.getData(1, 10, "name")).thenReturn(list);
 
 		// Mocking update method behavior
 		when(apiService.update("id", mockFile, requests)).thenReturn(dataResponse);
@@ -58,20 +59,26 @@ public class ControllerTest {
 		// Mocking delete method behavior
 		when(apiService.delete("id")).thenReturn(dataResponse);
 
+		// Mocking getLevelManager method behavior
+		when(apiService.getLevelManager("id", 0)).thenReturn(dataResponse);
+
 		// Call the create method to be tested
 		ResponseEntity<String> createResponse = apiController.create(mockFile, request);
 		// Call the getData method to be tested
-		ResponseEntity<List<DataResponse>> getDataResponse = apiController.getData();
+		ResponseEntity<List<DataResponse>> getDataResponse = apiController.getData(1, 10, "name");
 		// Call the update method to be tested
 		ResponseEntity<DataResponse> updateResponse = apiController.update("id", mockFile, request);
 		// Call the delete method to be tested
 		ResponseEntity<DataResponse> deleteResponse = apiController.delete("id");
+		// Call the getLevelManager method to be tested
+		ResponseEntity<DataResponse> getLevelManagerResponse = apiController.getLevelManager("id", 0);
 
 		// Assertions
 		assertNotNull(createResponse);
 		assertNotNull(getDataResponse);
 		assertNotNull(updateResponse);
 		assertNotNull(deleteResponse);
+		assertNotNull(getLevelManagerResponse);
 	}
 
 }

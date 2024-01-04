@@ -9,9 +9,10 @@ import lombok.Data;
  * @author SREEDHAR
  *
  */
+
 @Data
 public class DataResponse {
-
+	
 	private String id;
 	private String employeeName;
 	private String phoneNumber;

@@ -15,10 +15,10 @@ public class ExceptionHandlerTest {
 		 BadRequest ex  = new BadRequest ("Test BadRequest Exception");
 		 BadRequest ex1  = new BadRequest (400000L, "Test BadRequest Exception");
 
-	       // ResponseEntity<ExceptionResponse> response = exceptionHandler.handleBadRequest(ex);
+	        ResponseEntity<ExceptionResponse> response = exceptionHandler.handleBadRequest(ex);
 	        ResponseEntity<ExceptionResponse> response1 = exceptionHandler.handleBadRequest(ex1);
 
-	        //assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+	         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 	         assertEquals("Test BadRequest Exception", response1.getBody().getMessage());
 	    }
 	 
@@ -43,5 +43,22 @@ public class ExceptionHandlerTest {
 	        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
 	        assertEquals("Test Runtime Exception", response.getBody().getMessage());
 	    }
+	 
+	 @Test
+	  public void testhandleMissingServletRequestPartException() {
+		 org.springframework.web.multipart.support.MissingServletRequestPartException ex  = new org.springframework.web.multipart.support.MissingServletRequestPartException ("attribute");
 
+	        ResponseEntity<ExceptionResponse> response = exceptionHandler.handleMissingServletRequestPartException(ex);
+
+	        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+	        assertEquals("Required part 'attribute' is not present.", response.getBody().getMessage());
+	    }
+	 @Test
+	  public void testExceptionResponse() {
+		 ExceptionResponse response = new ExceptionResponse();
+		 response.setStatusCode(40001);
+		 response.setReason("reason");
+		 assertEquals(40001, response.getStatusCode());
+		 assertEquals("reason", response.getReason());
+	 }
 }

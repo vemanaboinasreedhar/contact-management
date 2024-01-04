@@ -1,12 +1,13 @@
 package com.vsr.contact.management.exception;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
 public class ExceptionResponse {
-	
+	@Getter @Setter
 	private int statusCode;
+	@Getter @Setter
 	private String message;
+	@Getter @Setter
 	private String reason;
-
 }

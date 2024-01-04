@@ -20,6 +20,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -82,11 +86,13 @@ public class ServiceTest {
 		Employee employee = new Employee();
 		employee.setId("1234567899asdf1234");
 		list.add(employee);
+		Page<Employee> mockedPage = new PageImpl<>(List.of(employee));
+		PageRequest pageRequest = PageRequest.of(1, 10, Sort.by("name"));
 		// Mocking behavior
-		when(employeeRepository.findAll()).thenReturn(list);
+		when(employeeRepository.findAll(pageRequest)).thenReturn(mockedPage);
 
 		// Call the method to be tested
-		List<DataResponse> result = apiService.getData();
+		List<DataResponse> result = apiService.getData(1, 10, "name");
 
 		// Assertions
 		assertNotNull(result);
@@ -97,6 +103,8 @@ public class ServiceTest {
 		// Prepare test data
 		byte[] fileBytes = "Some file content".getBytes();
 		MockMultipartFile mockFile = new MockMultipartFile("file", "filename.txt", "text/plain", fileBytes);
+		byte[] fileBytes1 = "Some file content".getBytes();
+		MockMultipartFile mockFile1 = new MockMultipartFile("file", "filename.txt", "text/plain", fileBytes1);
 		ApiRequest request = new ApiRequest();
 		request.setEmployeeName("employeeName");
 		request.setEmail("sdfghj");
@@ -153,6 +161,58 @@ public class ServiceTest {
 	}
 
 	@Test
+	public void getLevelManagerTest() {
+		// Prepare test data
+		UUID uuid = UUID.randomUUID();
+		List<Employee> list = new ArrayList<>();
+		Employee employee = new Employee();
+		employee.setId(uuid.toString());
+		employee.setEmployeeName("employeeName");
+		employee.setReportsTo(uuid.toString());
+		list.add(employee);
+
+		// Mocking behavior of findById
+		when(employeeRepository.findById(uuid)).thenReturn(Optional.of(employee));
+		// Prepare test data
+		// Mocking behavior
+		when(employeeRepository.findAll()).thenReturn(list);
+
+		// Call the method to be tested
+		DataResponse result = apiService.getLevelManager(uuid.toString(), 1);
+		// Assertions
+		assertNotNull(result);
+
+	}
+
+	@Test
+	public void getLevelManagerNegativeTest() {
+		// Prepare test data
+		UUID uuid = UUID.randomUUID();
+		List<Employee> list = new ArrayList<>();
+		Employee employee = new Employee();
+		employee.setId(uuid.toString());
+		employee.setEmployeeName("employeeName");
+
+		list.add(employee);
+
+		// Mocking behavior of findById
+		when(employeeRepository.findById(uuid)).thenReturn(Optional.of(employee));
+		// Prepare test data
+		// Mocking behavior
+		when(employeeRepository.findAll()).thenReturn(list);
+		for (int i = 0; i <= 10; i++) {
+			int j = 1+i;
+			// Assertions for exception handling
+			NotFound exception = assertThrows(NotFound.class, () -> apiService.getLevelManager(uuid.toString(), j));
+			// Assertions
+			assertNotNull(exception);
+		}
+		
+		
+
+	}
+
+	@Test
 	public void notFoundExceptionTest() throws IOException {
 		// Prepare test data
 		byte[] fileBytes = "Some file content".getBytes();
@@ -164,10 +224,12 @@ public class ServiceTest {
 		// Assertions for exception handling
 		NotFound updateException = assertThrows(NotFound.class,
 				() -> apiService.update(uuid.toString(), mockFile, mock(ApiRequest.class)));
+		// Assertions for exception handling
+		NotFound levelException = assertThrows(NotFound.class, () -> apiService.getLevelManager(uuid.toString(), 1));
 
 		NotFound deleteException = assertThrows(NotFound.class, () -> apiService.delete(uuid.toString()));
-		assertEquals("not found", updateException.getMessage());
-		assertEquals("not found", deleteException.getMessage());
-
+		assertEquals("Employee not found with id : " + uuid.toString(), updateException.getMessage());
+		assertEquals("Employee not found with id : " + uuid.toString(), deleteException.getMessage());
+		assertEquals("Employee not found with id : " + uuid.toString(), levelException.getMessage());
 	}
 }

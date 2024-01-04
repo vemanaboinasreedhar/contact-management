@@ -31,8 +31,8 @@ public class ApiController {
 
 	@PostMapping("/submit")
 	public ResponseEntity<String> create(
-			@RequestPart("file") MultipartFile file,
-			@RequestPart("request") String request) throws JsonMappingException, JsonProcessingException
+			@RequestPart(name = "file") MultipartFile file,
+			@RequestPart(name = "request") String request) throws JsonMappingException, JsonProcessingException
 			{
 		ObjectMapper objectMapper = new ObjectMapper();
 		ApiRequest requests = objectMapper.readValue(request, ApiRequest.class);
@@ -41,16 +41,18 @@ public class ApiController {
 	}
 	
 	@GetMapping("/getdata")
-	public ResponseEntity<List<DataResponse>> getData(){
-		List<DataResponse> response = apiService.getData();
+	public ResponseEntity<List<DataResponse>> getData(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name") String sortBy){
+		List<DataResponse> response = apiService.getData(page, size, sortBy);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@PutMapping("/update")
 	public ResponseEntity<DataResponse> update(
-			@RequestPart("id") String id,
-			@RequestPart("file") MultipartFile file,
-			@RequestPart("request") String request) throws JsonMappingException, JsonProcessingException
+			@RequestPart(name = "id") String id,
+			@RequestPart(name = "file", required = false) MultipartFile file,
+			@RequestPart(name = "request",  required = false) String request) throws JsonMappingException, JsonProcessingException
 			{
 		ObjectMapper objectMapper = new ObjectMapper();
 		ApiRequest requests = objectMapper.readValue(request, ApiRequest.class);
@@ -63,5 +65,11 @@ public class ApiController {
 		DataResponse response = apiService.delete(id);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	
+	}
+	
+	@GetMapping("/getLevelManager")
+	public ResponseEntity<DataResponse> getLevelManager(@RequestParam ("id") String employeeId, @RequestParam ("level") int level){
+		DataResponse response = apiService.getLevelManager(employeeId, level);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }

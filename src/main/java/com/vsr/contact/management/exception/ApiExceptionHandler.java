@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ApiExceptionHandler{
 	
+	@ExceptionHandler(org.springframework.web.multipart.support.MissingServletRequestPartException.class)
+	public ResponseEntity<ExceptionResponse> handleMissingServletRequestPartException(org.springframework.web.multipart.support.MissingServletRequestPartException ex){
+		return new ResponseEntity<>(getResponse(ex), HttpStatus.BAD_REQUEST);
+	}
+	
 	@ExceptionHandler(BadRequest.class)
 	public ResponseEntity<ExceptionResponse> handleBadRequest(BadRequest ex){
 		return new ResponseEntity<>(getResponse(ex), HttpStatus.BAD_REQUEST);
@@ -24,9 +29,11 @@ public class ApiExceptionHandler{
 		return new ResponseEntity<>(getResponse(ex), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	private ExceptionResponse getResponse(Exception ex) {
+	private ExceptionResponse getResponse(Throwable ex) {
 		ExceptionResponse res = new ExceptionResponse();
+		res.setStatusCode(400001);
 		res.setMessage(ex.getMessage());
+		res.setReason(ex.toString());
 		return res;
 	}
 }
