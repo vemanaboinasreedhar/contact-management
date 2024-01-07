@@ -45,6 +45,10 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
@@ -59,33 +63,22 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version> <!-- Adjust version if needed -->
+				<!-- Adjust version if needed -->
 				<configuration>
 					<testFailureIgnore>false</testFailureIgnore>
 					<reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
 				</configuration>
 			</plugin>
-			<!--  to generate the Jacoco report in JSON format.-->
+			<!-- JaCoCo Maven plugin -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.7</version>
+				<version>0.8.7</version> <!-- You can adjust the version as needed -->
 				<executions>
 					<execution>
-						<id>prepare-agent</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
-						<configuration>
-							<destFile>${project.build.directory}/jacoco/jacoco.exec</destFile>
-							<!-- Add the following lines for JSON report -->
-							<dataFile>${project.build.directory}/jacoco/jacoco.exec</dataFile>
-							<output>file</output>
-							<append>true</append>
-							<includes>
-								<include>com/vsr/contact/management/**/*</include>
-							</includes>
-						</configuration>
 					</execution>
 					<execution>
 						<id>report</id>
@@ -93,20 +86,9 @@
 						<goals>
 							<goal>report</goal>
 						</goals>
-						<configuration>
-							<!-- Add the following lines for JSON report -->
-							<dataFile>${project.build.directory}/jacoco/jacoco.exec</dataFile>
-							<outputDirectory>${project.build.directory}/jacoco</outputDirectory>
-							<reportFormats>
-								<reportFormat>xml</reportFormat>
-								<reportFormat>html</reportFormat>
-								<reportFormat>json</reportFormat>
-							</reportFormats>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
 	</build>
 
