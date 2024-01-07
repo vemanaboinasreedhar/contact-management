@@ -78,6 +78,13 @@
 						</goals>
 						<configuration>
 							<destFile>${project.build.directory}/jacoco/jacoco.exec</destFile>
+							<!-- Add the following lines for JSON report -->
+							<dataFile>${project.build.directory}/jacoco/jacoco.exec</dataFile>
+							<output>file</output>
+							<append>true</append>
+							<includes>
+								<include>com/vsr/contact/management/**/*</include>
+							</includes>
 						</configuration>
 					</execution>
 					<execution>
@@ -86,9 +93,20 @@
 						<goals>
 							<goal>report</goal>
 						</goals>
+						<configuration>
+							<!-- Add the following lines for JSON report -->
+							<dataFile>${project.build.directory}/jacoco/jacoco.exec</dataFile>
+							<outputDirectory>${project.build.directory}/jacoco</outputDirectory>
+							<reportFormats>
+								<reportFormat>xml</reportFormat>
+								<reportFormat>html</reportFormat>
+								<reportFormat>json</reportFormat>
+							</reportFormats>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 
