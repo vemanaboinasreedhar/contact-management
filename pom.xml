@@ -69,7 +69,7 @@
 					<reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
 				</configuration>
 			</plugin>
-			<!-- JaCoCo Maven plugin -->
+			  <!-- JaCoCo Maven plugin -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
